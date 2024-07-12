@@ -7,6 +7,9 @@ class Product:
         self.name = name
         self.price = price
         self.quantity = quantity
+    
+    def read(self):
+         print(f'Product: {self.name}, Price: {self.price}, Quantity: {self.quantity}')
         
 class Book(Product):
     def __init__(self, name, price, quantity, author):
@@ -24,7 +27,10 @@ class Book(Product):
         print(f"Author: {self.author}")
         print(f"Price: ${self.price}")
         print(f"Quantity: {self.quantity}")
-            
+   
+   
+ptoduct_1 = Product('Notebook', 10000, 10)
+ptoduct_1.read()
     
 book_1 = Book('English', 23.45, 50, 'Mitchel')
 book_1.read()
@@ -41,9 +47,13 @@ class Restaurant:
         return f"Restaurant: {self.name}, Cuisine: {self.cuisine}, Menu: {self.menu}"
     
     def is_dish_available(self, dish_name, quantity):
-        if dish_name in self.menu and self.menu[dish_name]['quantity'] >= quantity:
-            return True
-        return False
+        """
+        Checks if a dish is available in the menu and if the requested quantity is available
+        Returns:
+            bool: True if the dish is available in sufficient quantity, False otherwise
+        """
+        dish_info = self.menu.get(dish_name)
+        return dish_info and dish_info['quantity'] >= quantity
     
 class FastFood(Restaurant):
     def __init__(self, name, cuisine, menu, drive_thru):
@@ -51,19 +61,25 @@ class FastFood(Restaurant):
         self.drive_thru = drive_thru
         
     def order(self, dish_name, quantity):
+        """
+        Orders a dish in the specified quantity and updates the menu accordingly
+        Returns:
+            float or str: The total cost of the order if successful, or an error message if the order cannot be fulfilled
+        """
         if not self.is_dish_available(dish_name, quantity):
             return f"Requested quantity not available or dish '{dish_name}' not found"
         
-        price_per_unit = self.menu[dish_name]['price']
-        current_quantity = self.menu[dish_name]['quantity']
+        dish_info = self.menu[dish_name]
+        current_quantity = dish_info['quantity']
         
         if quantity > current_quantity:
             return f"Requested quantity not available for '{dish_name}'"
         
-        total_cost = price_per_unit * quantity
-        self.menu[dish_name]['quantity'] -= quantity
+        total_cost = dish_info['price'] * quantity
+        dish_info['quantity'] -= quantity
         
         return total_cost
+        
     
 menu = {
     'burger': {'price': 5, 'quantity': 10},
